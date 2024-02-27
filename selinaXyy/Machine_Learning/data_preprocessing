@@ -1,0 +1,505 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/selinaXyy/Machine_Learning/blob/main/selinaXyy/Machine_Learning/data_preprocessing\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "37puETfgRzzg"
+      },
+      "source": [
+        "# Data Preprocessing Tools"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "EoRP98MpR-qj"
+      },
+      "source": [
+        "## Importing the libraries"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "9fhSvROq6D3f"
+      },
+      "outputs": [],
+      "source": [
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "import pandas as pd"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "RopL7tUZSQkT"
+      },
+      "source": [
+        "## Importing the dataset"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "7kHCf3ec6D3g"
+      },
+      "outputs": [],
+      "source": [
+        "dataset = pd.read_csv(\"Data.csv\") #creates the corresponding data frame based on the dataset.\n",
+        "\n",
+        "X = dataset.iloc[:, :-1].values #creating features by locating the indexes of the feature columns & rows.\n",
+        "#starting off with specifying rows, : includes all the rows.\n",
+        "#range of columns specifies all the columns except the last one (upperbound).\n",
+        "\n",
+        "y = dataset.iloc[:, -1].values #creating dependent variables based on the last column"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "vdYKtmGj6D3g",
+        "outputId": "ca2832f4-bb42-4393-976b-6810f6331469",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[['France' 44.0 72000.0]\n",
+            " ['Spain' 27.0 48000.0]\n",
+            " ['Germany' 30.0 54000.0]\n",
+            " ['Spain' 38.0 61000.0]\n",
+            " ['Germany' 40.0 nan]\n",
+            " ['France' 35.0 58000.0]\n",
+            " ['Spain' nan 52000.0]\n",
+            " ['France' 48.0 79000.0]\n",
+            " ['Germany' 50.0 83000.0]\n",
+            " ['France' 37.0 67000.0]]\n"
+          ]
+        }
+      ],
+      "source": [
+        "print(X)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "7y2DwhBV6D3g",
+        "outputId": "116c3169-6776-4f85-9fa3-1ba7f1d01f90",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['No' 'Yes' 'No' 'No' 'Yes' 'Yes' 'No' 'Yes' 'No' 'Yes']\n"
+          ]
+        }
+      ],
+      "source": [
+        "print(y)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "nhfKXNxlSabC"
+      },
+      "source": [
+        "## Taking care of missing data"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "A8UlyjlQ6D3h"
+      },
+      "outputs": [],
+      "source": [
+        "from sklearn.impute import SimpleImputer #SimpleImputer provides basic strategies for imputing missing values in a dataset.\n",
+        "\n",
+        "imputer = SimpleImputer(missing_values=np.nan, strategy=\"mean\") #creates an object of the class, nan is for NaN.\n",
+        "\n",
+        "imputer.fit(X[:, 1:3]) #.fit method is used for training the imputer.\n",
+        "X[:, 1:3] = imputer.transform(X[:, 1:3]) #returns a new array with the missing values replaced based on the trained imputer.\n",
+        "#.transform replaces the missing values in each column with the corresponding trained data from .fit.\n",
+        "#The imputer is trained on a specific range, and it expects the same structure when transforming new data."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "8g9PlI0v6D3h",
+        "outputId": "6ec02677-7cad-4b87-fe52-36cfbb36471b",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[['France' 44.0 72000.0]\n",
+            " ['Spain' 27.0 48000.0]\n",
+            " ['Germany' 30.0 54000.0]\n",
+            " ['Spain' 38.0 61000.0]\n",
+            " ['Germany' 40.0 63777.77777777778]\n",
+            " ['France' 35.0 58000.0]\n",
+            " ['Spain' 38.77777777777778 52000.0]\n",
+            " ['France' 48.0 79000.0]\n",
+            " ['Germany' 50.0 83000.0]\n",
+            " ['France' 37.0 67000.0]]\n"
+          ]
+        }
+      ],
+      "source": [
+        "print(X)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "CriG6VzVSjcK"
+      },
+      "source": [
+        "## Encoding categorical data"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "AhSpdQWeSsFh"
+      },
+      "source": [
+        "### Encoding the Independent Variable"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "o7TyORTV6D3h",
+        "outputId": "bd44c270-1006-43b5-e124-6389f973e9d2"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[[1.0 0.0 0.0 44.0 72000.0]\n",
+            " [0.0 0.0 1.0 27.0 48000.0]\n",
+            " [0.0 1.0 0.0 30.0 54000.0]\n",
+            " [0.0 0.0 1.0 38.0 61000.0]\n",
+            " [0.0 1.0 0.0 40.0 63777.77777777778]\n",
+            " [1.0 0.0 0.0 35.0 58000.0]\n",
+            " [0.0 0.0 1.0 38.77777777777778 52000.0]\n",
+            " [1.0 0.0 0.0 48.0 79000.0]\n",
+            " [0.0 1.0 0.0 50.0 83000.0]\n",
+            " [1.0 0.0 0.0 37.0 67000.0]]\n"
+          ]
+        }
+      ],
+      "source": [
+        "from sklearn.compose import ColumnTransformer\n",
+        "from sklearn.preprocessing import OneHotEncoder\n",
+        "\n",
+        "ct = ColumnTransformer(transformers=[(\"encoder\", OneHotEncoder(), [0])],remainder=\"passthrough\") #passthrough keeps the remained data\n",
+        "X = np.array(ct.fit_transform(X)) #converts the returned array into a numpy array\n",
+        "print(X)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "DXh8oVSITIc6"
+      },
+      "source": [
+        "### Encoding the Dependent Variable"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.preprocessing import LabelEncoder\n",
+        "\n",
+        "le = LabelEncoder() #binary categorical variable with only two kinds of values don't need arguments\n",
+        "\n",
+        "y = le.fit_transform(y) #dependent variables don't have to be numpy array, but features.\n",
+        "print(y)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ESbZ1xm26J_a",
+        "outputId": "1bac3038-da73-41ba-cdfa-8c10867224ce"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[0 1 0 0 1 1 0 1 0 1]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "qb_vcgm3qZKW"
+      },
+      "source": [
+        "## Splitting the dataset into the Training set and Test set"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.model_selection import train_test_split\n",
+        "\n",
+        "# ORDER MATTERS for variable listings due to how values are returned\n",
+        "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1) #only need to define the size of test set\n",
+        "#specifying random_state make sure the same split will be performed every time the code is run"
+      ],
+      "metadata": {
+        "id": "Kjz9hwNRoPMB"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(X_train) #values are returned from previous declarations"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "H0iceBH8uDj-",
+        "outputId": "ff40c027-ec43-4dae-cc38-132ef5210007"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[[0.0 0.0 1.0 38.77777777777778 52000.0]\n",
+            " [0.0 1.0 0.0 40.0 63777.77777777778]\n",
+            " [1.0 0.0 0.0 44.0 72000.0]\n",
+            " [0.0 0.0 1.0 38.0 61000.0]\n",
+            " [0.0 0.0 1.0 27.0 48000.0]\n",
+            " [1.0 0.0 0.0 48.0 79000.0]\n",
+            " [0.0 1.0 0.0 50.0 83000.0]\n",
+            " [1.0 0.0 0.0 35.0 58000.0]]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(X_test)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "kqm9eaC8uDr_",
+        "outputId": "ced06a4b-0857-4b59-980e-b8ccc68629bf"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[[0.0 1.0 0.0 30.0 54000.0]\n",
+            " [1.0 0.0 0.0 37.0 67000.0]]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(y_train) #trains correspond to each other"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "_P3m1Tj0uDzB",
+        "outputId": "419810b2-4174-4a33-b526-834da4ec4dfe"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[0 1 0 0 1 1 0 1]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(y_test) #tests correspond to each other"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Y0Gr1iaruD6l",
+        "outputId": "1d4c3b43-7729-4740-dfe7-fa1566694686"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[0 1]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "TpGqbS4TqkIR"
+      },
+      "source": [
+        "## Feature Scaling"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.preprocessing import StandardScaler\n",
+        "sc = StandardScaler() #the class automatically perform standardlization\n",
+        "\n",
+        "X_train[:, 3:] = sc.fit_transform(X_train[:, 3:])\n",
+        "X_test[:, 3:] = sc.transform(X_test[:, 3:]) #uses the same scaler that was trained from the traning set\n",
+        "#preventing information leakage on the test set"
+      ],
+      "metadata": {
+        "id": "LFZekA1Q8frR"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(X_train)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "c7rl8BNSFLjw",
+        "outputId": "be5a0e8b-f0a3-470b-aacc-3762850d4db3"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[[0.0 0.0 1.0 -0.19159184384578545 -1.0781259408412425]\n",
+            " [0.0 1.0 0.0 -0.014117293757057777 -0.07013167641635372]\n",
+            " [1.0 0.0 0.0 0.566708506533324 0.633562432710455]\n",
+            " [0.0 0.0 1.0 -0.30453019390224867 -0.30786617274297867]\n",
+            " [0.0 0.0 1.0 -1.9018011447007988 -1.420463615551582]\n",
+            " [1.0 0.0 0.0 1.1475343068237058 1.232653363453549]\n",
+            " [0.0 1.0 0.0 1.4379472069688968 1.5749910381638885]\n",
+            " [1.0 0.0 0.0 -0.7401495441200351 -0.5646194287757332]]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(X_test)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ZJHVlguYFLtY",
+        "outputId": "77d830c8-fd41-4aa7-da31-240ece1aaa13"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[[0.0 1.0 0.0 -1.4661817944830124 -0.9069571034860727]\n",
+            " [1.0 0.0 0.0 -0.44973664397484414 0.2056403393225306]]\n"
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3 (ipykernel)",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.9.6"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
