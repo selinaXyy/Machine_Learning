@@ -1,1 +1,1 @@
-## _Machine Learning Notes in Python_
+## _ML Notes in Python_
